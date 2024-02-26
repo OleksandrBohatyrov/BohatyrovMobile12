@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BohatyrovMobile.TimePage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label 
+                x:Name="lbl"
+                Text="Vajuta siia!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" 
+            
+                TextColor="LightGreen"
+                FontSize="Subtitle">
+            <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                </Label.GestureRecognizers>
+
+            </Label>
+            <Button
+                x:Name="Time_run"
+               Text="Näita kellaeg"
+                FontSize="Medium"
+                Clicked="Time_run_Clicked"
+                CornerRadius="10">
+            </Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
