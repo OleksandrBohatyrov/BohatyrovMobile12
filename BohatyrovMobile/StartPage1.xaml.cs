@@ -23,7 +23,8 @@ namespace BohatyrovMobile
                 new Lumememm(),
                 new FramePage2(),
                 new tripstrapstrull(),
-                new PickerPage()
+                new PickerPage(),
+                new Browser()
             };
         List<string> text = new List<string>()
             {
@@ -36,7 +37,8 @@ namespace BohatyrovMobile
                 "Ava lumememm",
                 "Ava frame page 2",
                 "Ava trips traps trull",
-                "Ava picker leht"
+                "Ava picker leht",
+                "Ava browser"
             };
         StackLayout st;
         public StartPage1()
