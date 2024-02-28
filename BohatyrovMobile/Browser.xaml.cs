@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plugin.Messaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace BohatyrovMobile
     {
 
         Entry addressEntry;
-
+        Entry tel_nr_email, text;
         Picker picker;
         WebView webView;
         StackLayout st;
@@ -29,6 +30,19 @@ namespace BohatyrovMobile
             {
                 Title = "Browser"
             };
+
+            tel_nr_email = new Entry { Placeholder = "Kirjuta siia telefoni number" };
+            text = new Entry { Placeholder = "Kirjuta tekst siia" };
+
+            Button sms_btn = new Button { Text = "Saada SMS" };
+            sms_btn.Clicked += Sms_btn_Clicked;
+
+            Button call_btn = new Button { Text = "Helista" };
+            call_btn.Clicked += Call_btn_Clicked1;
+
+            Button mail_btn = new Button { Text = "Kirjuta kiri" };
+            mail_btn.Clicked += Mail_btn_Clicked;
+
 
             addressEntry = new Entry
             {
@@ -53,13 +67,22 @@ namespace BohatyrovMobile
             picker.SelectedIndexChanged += Valime_leht_avamiseks;
             st = new StackLayout
             {
-                Children = {addressEntry, picker, webView }
+                Children = {addressEntry, picker, webView, tel_nr_email, sms_btn, call_btn, mail_btn }
             };
 
             Content = st;
 
 
        
+        }
+
+        private void Call_btn_Clicked1(object sender, EventArgs e)
+        {
+            var call = CrossMessaging.Current.PhoneDialer;
+            if (call.CanMakePhoneCall)
+            {
+                call.MakePhoneCall(tel_nr_email.Text);
+            }
         }
 
         private void AddressEntry_Completed(object sender, EventArgs e)
@@ -75,6 +98,33 @@ namespace BohatyrovMobile
         private void Valime_leht_avamiseks(object sender, EventArgs e)
         {
             webView.Source = new UrlWebViewSource {Url = lehed[picker.SelectedIndex] };
+        }
+
+        private void Sms_btn_Clicked(object sender, EventArgs e)
+        {
+            var sms = CrossMessaging.Current.SmsMessenger;
+            if (sms.CanSendSms)
+            {
+                sms.SendSms(tel_nr_email.Text, text.Text);
+            }
+        }
+
+        private void Call_btn_Clicked(object sender, EventArgs e)
+        {
+            var call = CrossMessaging.Current.PhoneDialer;
+            if (call.CanMakePhoneCall)
+            {
+                call.MakePhoneCall(tel_nr_email.Text);
+            }
+        }
+
+        private void Mail_btn_Clicked(object sender, EventArgs e)
+        {
+            var mail = CrossMessaging.Current.EmailMessenger;
+            if (mail.CanSendEmail)
+            {
+                mail.SendEmail(tel_nr_email.Text, "Tervitus!", text.Text);
+            }
         }
     }
 }
