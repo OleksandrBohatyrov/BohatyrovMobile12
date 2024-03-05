@@ -25,6 +25,9 @@ namespace BohatyrovMobile
         List<string> nimetused = new List<string> { "Moodle", "TTHK", "GitHub", "W3Schools" };
         List<string> history = new List<string>();
 
+
+        string homeURL = "https://www.tthk.ee/";
+
         string result = "";
 
 
@@ -156,6 +159,11 @@ namespace BohatyrovMobile
             addressEntry.HorizontalOptions = LayoutOptions.FillAndExpand;
 
 
+            var longPressGesture = new TapGestureRecognizer();
+            longPressGesture.NumberOfTapsRequired = 1;
+            longPressGesture.Tapped += LongPressGesture_Tapped ;
+            picker.GestureRecognizers.Add(longPressGesture);
+
 
             picker.SelectedIndexChanged += Valime_leht_avamiseks;
             st = new StackLayout
@@ -171,6 +179,23 @@ namespace BohatyrovMobile
 
 
 
+        }
+
+        private async void LongPressGesture_Tapped(object sender, EventArgs e)
+        {
+            var pickedItem = picker.SelectedItem as string;
+            var confirm = await DisplayAlert("Kustuta", $"Kas soovite kustutada {pickedItem}?", "Jah", "Ei");
+            if (confirm)
+            {
+                if (lehed.Contains(pickedItem))
+                {
+                    lehed.Remove(pickedItem);
+                    nimetused.Remove(pickedItem);
+                    picker.Items.Remove(pickedItem);
+                 
+                    webView.Source = new UrlWebViewSource { Url = homeURL }; 
+                }
+            }
         }
 
         private void Swipe_Swiped1(object sender, SwipedEventArgs e)
@@ -200,7 +225,7 @@ namespace BohatyrovMobile
 
                     break;
                 case SwipeDirection.Up:
-                    webView.Source = new UrlWebViewSource { Url = lehed[0] };
+                    webView.Source = new UrlWebViewSource { Url = homeURL };
                     break;
               
                 default: break;
@@ -245,10 +270,24 @@ namespace BohatyrovMobile
                 nimetused.Add(result);
                 picker.Items.Add(result);
                 picker.SelectedIndex = nimetused.IndexOf(result);
+
+                UpdateWebViewSource();
             }
             else
             {
                 await DisplayAlert("Error", "The current source is not a URL", "OK");
+            }
+        }
+        private void UpdateWebViewSource()
+        {
+            if (picker.SelectedIndex >= 0 && picker.SelectedIndex < lehed.Count)
+            {
+                string selectedUrl = lehed[picker.SelectedIndex];
+                if (!string.IsNullOrEmpty(selectedUrl))
+                {
+                    webView.Source = new UrlWebViewSource { Url = selectedUrl };
+                    AddToHistory(selectedUrl);
+                }
             }
         }
 
@@ -285,7 +324,7 @@ namespace BohatyrovMobile
         //        call.MakePhoneCall(tel_nr_email.Text);
         //    }
         //}
-
+            
         private void AddressEntry_Completed(object sender, EventArgs e)
         {
             string url = addressEntry.Text;
@@ -298,18 +337,18 @@ namespace BohatyrovMobile
                 }
 
                 webView.Source = new UrlWebViewSource { Url = url };
-                AddToHistory(url);
+                AddToHistory(url); 
             }
         }
 
         private void Valime_leht_avamiseks(object sender, EventArgs e)
         {
-            if (picker.SelectedIndex >= 0 && picker.SelectedIndex < lehed.Count)
-            {
-                string selectedUrl = lehed[picker.SelectedIndex];
-                webView.Source = new UrlWebViewSource { Url = selectedUrl };
-                AddToHistory(selectedUrl);
-            }
+                if (picker.SelectedIndex >= 0 && picker.SelectedIndex < lehed.Count)
+                {
+                    string selectedUrl = lehed[picker.SelectedIndex];
+                    webView.Source = new UrlWebViewSource { Url = selectedUrl };
+                    AddToHistory(selectedUrl);
+                }
         }
         private void AddToHistory(string url)
         {

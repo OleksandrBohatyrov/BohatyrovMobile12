@@ -25,7 +25,7 @@ namespace BohatyrovMobile
                 new tripstrapstrull(),
                 new PickerPage(),
                 new Browser(),
-                new CallFriend()
+                new Helista()
             };
         List<string> text = new List<string>()
             {
