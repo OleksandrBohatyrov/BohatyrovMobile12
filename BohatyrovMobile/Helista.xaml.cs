@@ -117,10 +117,14 @@ namespace BohatyrovMobile
 
         private void Mail_btn_Clicked(object sender, EventArgs e)
         {
-            var mail = CrossMessaging.Current.EmailMessenger;
-            if (mail.CanSendEmail)
+            try
             {
-                mail.SendEmail(email.Text, "Tervitus!", text.Text);
+                var uri = new Uri("mailto:" + email.Text + "?subject=Tervitus!&body=" + text.Text);
+                Device.OpenUri(uri);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unable to open mail client: " + ex);
             }
         }
     }
