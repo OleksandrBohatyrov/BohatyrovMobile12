@@ -162,7 +162,7 @@ namespace BohatyrovMobile
                 if (choice)
                 {
                     var pickResult = await Xamarin.Essentials.MediaPicker.PickPhotoAsync();
-
+                        
                     if (pickResult != null)
                     {
                         selectedPhone.Pilt = ImageSource.FromStream(() => pickResult.OpenReadAsync().Result);
