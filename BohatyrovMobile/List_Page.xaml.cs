@@ -20,9 +20,19 @@ namespace BohatyrovMobile
         Button lisa, kustuta;
         Telefon selectedPhone;
 
+        
+
+        Entry nimetusEntry = new Entry { Placeholder = "Nimetus",  };
+        Entry tootjaEntry = new Entry { Placeholder = "Tootja",  };
+        Entry hindEntry = new Entry { Placeholder = "Hind",  };
+
+
+
 
         public List_Page()
         {
+
+       
             lisa = new Button { Text = "Lisa felefon" };
             kustuta = new Button { Text = "Kustuta telefn" };
             telefons = new ObservableCollection<Telefon>
@@ -41,17 +51,19 @@ namespace BohatyrovMobile
                 Text = "Telefonid loetelu",
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             };
+
             list = new ListView
             {
+                
                 SeparatorColor = Color.Orange,
                 Header = "Telefonid rühmades",
                 Footer = DateTime.Now.ToString("T"),
                 HasUnevenRows = true,
                 ItemsSource = telefonideruhmades,
-                IsGroupingEnabled = true,
-                //ItemsSource =telefons,
+                IsGroupingEnabled = true,           
                 GroupHeaderTemplate = new DataTemplate(() =>
                 {
+
                     Label tootja = new Label();
                     tootja.SetBinding(Label.TextProperty, "Nimetus");
                     return new ViewCell
@@ -66,6 +78,9 @@ namespace BohatyrovMobile
                 }),
                 ItemTemplate = new DataTemplate(() =>
                 {
+
+                    Image image = new Image { Aspect=Aspect.AspectFill, HeightRequest = 50, WidthRequest= 50};
+                    image.SetBinding(Image.SourceProperty, "Pilt");
                     Label nimetus = new Label { FontSize = 20 };
                     nimetus.SetBinding(Label.TextProperty, "Nimetus");
                     Label hind = new Label();
@@ -74,9 +89,10 @@ namespace BohatyrovMobile
                     {
                         View = new StackLayout
                         {
+                          
                             Padding = new Thickness(0, 5),
-                            Orientation = StackOrientation.Vertical,
-                            Children = { nimetus, hind }
+                            Orientation = StackOrientation.Horizontal,
+                            Children = { image, nimetus, hind  }
                         }
                     };
                 })
@@ -85,7 +101,10 @@ namespace BohatyrovMobile
             list.ItemTapped += List_ItemTapped;
             lisa.Clicked += Lisa_Clicked;
             kustuta.Clicked += Kustuta_Clicked;
-            this.Content = new StackLayout { Children = { lbl_list, list, lisa, kustuta } };
+            this.Content = new StackLayout { Children = { lbl_list, list, lisa, kustuta, nimetusEntry, tootjaEntry, hindEntry } };
+
+
+
 
         }
 
@@ -99,23 +118,57 @@ namespace BohatyrovMobile
             list.ItemsSource = telefonideruhmades;
         }
 
-        private void Lisa_Clicked(object sender, EventArgs e)
+        private async void Lisa_Clicked(object sender, EventArgs e)
         {
-            telefons.Add(new Telefon { Nimetus = "Uus telefon", Tootja = "Uus tootja", Hind = 1 });
+
+
+            var pickResult = await Xamarin.Essentials.MediaPicker.PickPhotoAsync();
+
+            if (pickResult != null)
+            {
+                var telefon = new Telefon
+                {
+                    Nimetus = nimetusEntry.Text,
+                    Tootja = tootjaEntry.Text,
+                    Hind = int.Parse(hindEntry.Text),
+                    Pilt = ImageSource.FromStream(() => pickResult.OpenReadAsync().Result)
+                };
+
+                telefons.Add(telefon);
+
+                UpdateList();
+            }
+        }
+
+
+        private void UpdateList()
+        {
             var ruhmad = telefons.GroupBy(p => p.Tootja)
-                         .Select(g => new Ruhm<string, Telefon>(g.Key, g));
+                            .Select(g => new Ruhm<string, Telefon>(g.Key, g));
             telefonideruhmades = new ObservableCollection<Ruhm<string, Telefon>>(ruhmad);
-            list.ItemsSource = null;
             list.ItemsSource = telefonideruhmades;
         }
 
         private async void List_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-
             selectedPhone = e.Item as Telefon;
             if (selectedPhone != null)
             {
-                await DisplayAlert("See on", $"{selectedPhone.Tootja} | {selectedPhone.Nimetus} - {selectedPhone.Hind} eurot", "Ok");
+
+                await DisplayAlert("Info", $"{selectedPhone.Tootja} | {selectedPhone.Nimetus} - {selectedPhone.Hind} eurot", "Ok");
+
+                bool choice = await DisplayAlert("Vali foto", "Soovid muuta telefoni pilti?", "Jah", "Ei");
+
+                if (choice)
+                {
+                    var pickResult = await Xamarin.Essentials.MediaPicker.PickPhotoAsync();
+
+                    if (pickResult != null)
+                    {
+                        selectedPhone.Pilt = ImageSource.FromStream(() => pickResult.OpenReadAsync().Result);
+                        UpdateList();
+                    }
+                }
             }
         }
     }
