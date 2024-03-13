@@ -85,7 +85,9 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\telefon.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BohatyrovMobile\BohatyrovMobile.csproj">
       <Project>{885117C1-41AB-47EA-B9B4-C51F6FFFB787}</Project>

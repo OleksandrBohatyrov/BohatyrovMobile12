@@ -25,7 +25,8 @@ namespace BohatyrovMobile
                 new tripstrapstrull(),
                 new PickerPage(),
                 new Browser(),
-                new Helista()
+                new Helista(),
+                new List_Page()
             };
         List<string> text = new List<string>()
             {
@@ -40,7 +41,8 @@ namespace BohatyrovMobile
                 "Ava trips traps trull",
                 "Ava picker leht",
                 "Ava browser",
-                "Ava helista"
+                "Ava helista",
+                "Ava list leht"
             };
         StackLayout st;
         public StartPage1()
