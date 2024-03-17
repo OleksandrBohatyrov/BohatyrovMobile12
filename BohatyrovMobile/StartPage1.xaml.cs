@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,7 +27,8 @@ namespace BohatyrovMobile
                 new PickerPage(),
                 new Browser(),
                 new Helista(),
-                new List_Page()
+                new List_Page(),
+                new RiikLeht(),
             };
         List<string> text = new List<string>()
             {
@@ -42,7 +44,8 @@ namespace BohatyrovMobile
                 "Ava picker leht",
                 "Ava browser",
                 "Ava helista",
-                "Ava list leht"
+                "Ava list leht",
+                "Ava riik leht"
             };
         StackLayout st;
         public StartPage1()

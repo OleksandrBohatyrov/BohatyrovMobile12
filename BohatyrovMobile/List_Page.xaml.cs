@@ -145,8 +145,12 @@ namespace BohatyrovMobile
         {
             var ruhmad = telefons.GroupBy(p => p.Tootja)
                             .Select(g => new Ruhm<string, Telefon>(g.Key, g));
-            telefonideruhmades = new ObservableCollection<Ruhm<string, Telefon>>(ruhmad);
-            list.ItemsSource = telefonideruhmades;
+            telefonideruhmades.Clear(); 
+            foreach (var ruhm in ruhmad)
+            {
+                telefonideruhmades.Add(ruhm);
+            }
+            OnPropertyChanged(nameof(telefonideruhmades));
         }
 
         private async void List_ItemTapped(object sender, ItemTappedEventArgs e)
